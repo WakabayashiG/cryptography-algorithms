@@ -12,7 +12,6 @@
                       v-decorator="['plainText', { rules: [{ required: true, message: 'Please input plain text!' }] }]" />
         </a-form-item>
 
-
         <a-row type="flex">
           <a-col :span="24" :md="12">
             <a-form-item>
@@ -29,8 +28,6 @@
             </a-form-item>
           </a-col>
         </a-row>
-
-
       </a-form>
     </a-card>
 
@@ -40,9 +37,11 @@
       <a-form-item label="Cipher Text: ">
         <a-textarea :rows="7" :disabled="true" v-model:value="cipherText" />
       </a-form-item>
+
+      <a-table
+          :columns="getLetterTableColumns" :data-source="getLetterTableData" size="small" bordered :pagination="false"
+      />
     </a-card>
-
-
 
   </div>
 </template>
@@ -61,7 +60,6 @@ export default {
         'K':10, 'L':11, 'M':12, 'N':13, 'O':14, 'P':15, 'Q':16, 'R':17, 'S':18, 'T':19,
         'U':20, 'V':21, 'W':22, 'X':23, 'Y':24, 'Z':25
       },
-
       cipherText:''
     };
   },
@@ -100,12 +98,34 @@ export default {
 
     getKeyByValue(object, value) {
       return Object.keys(object).find(key => object[key] === value);
-    }
+    },
 
+  },
+
+  computed: {
+    getLetterTableColumns() {
+      let columns = [];
+      for (const item in this.lettersIdxMap) {
+        columns.push({
+          title: item,
+          dataIndex: item,
+        })
+      }
+
+      return columns;
+    },
+
+    getLetterTableData() {
+      let data = [{ key: '1'}];
+      for (const item in this.lettersIdxMap) {
+        data[0][item] = this.lettersIdxMap[item];
+      }
+
+      return data;
+    }
   }
 }
 </script>
 
 <style scoped>
-
 </style>
