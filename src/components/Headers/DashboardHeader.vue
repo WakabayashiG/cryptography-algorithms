@@ -1,7 +1,7 @@
 <template>
 	
 	<!-- Main Sidebar -->
-	<component :is="true ? 'a-affix' : 'div'" :offset-top="top">
+	<component :is="false ? 'a-affix' : 'div'" :offset-top="top">
 
 		<!-- Layout Header -->
 		<a-layout-header>
