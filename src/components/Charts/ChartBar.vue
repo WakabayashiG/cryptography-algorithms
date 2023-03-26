@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<canvas ref="chart" :style="{'height': height + 'px'}"></canvas>
+		<canvas ref="chart" :style="{'height': height + 'px'}" class="canvas" :class="type"></canvas>
 	</div>
 </template>
 
@@ -8,11 +8,12 @@
 	import { Chart, registerables } from 'chart.js';
 	Chart.register(...registerables);
 
-	export default ({
-		props: [
-			'data',
-			'height',
-		],
+	export default {
+		props: {
+			data: Object,
+			height: Number,
+      type: String
+    },
 		data(){
 			return {
 				chart: null,
@@ -92,12 +93,19 @@
 		beforeDestroy: function () {
 			this.chart.destroy() ;
 		},
-	})
+	}
 
 </script>
 
 <style lang="scss" scoped>
 	canvas {
-		background-image: linear-gradient(to right, #00369E, #005CFD, #A18DFF ) ;
+
 	}
+
+  .canvas.cipher {
+    background-image: linear-gradient(to right, #00369E, #005CFD, #A18DFF ) ;
+  }
+  .canvas.reference {
+    background-image: linear-gradient(to right, #9e001d, #fd003b, #ff8daf) ;
+  }
 </style>

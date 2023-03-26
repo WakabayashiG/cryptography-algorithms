@@ -4,20 +4,15 @@
       <a-col :span="12">
         <a-card>
           <a-form-item label="Cipher Text: ">
-            <a-textarea :rows="7" v-model:value="cipherText"/>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="findFrequencies4CipherText" style="width: 100%;">
-              Analyze Cipher Text
-            </a-button>
+            <a-textarea :rows="8" v-model:value="cipherText" @change="findFrequencies4CipherText"/>
           </a-form-item>
         </a-card>
 
-        <CardBarChart :chartData="cipherFreqChartData" style="margin-top: 10px" :key="cipherFreqChartKey"></CardBarChart>
+        <CardBarChart :chartData="cipherFreqChartData" :chartType="'cipher'" style="margin-top: 10px" :key="cipherFreqChartKey"></CardBarChart>
 
         <a-card style="margin-top: 10px">
           <a-table :key="cipherFreqChartKey"
-              :columns="cipherFreqTableColumns" :data-source="cipherFreqTableData" size="small" bordered :pagination="false">
+              :columns="cipherFreqTableColumns" :data-source="cipherFreqTableData" size="small" bordered :pagination="false" :scroll="{ x: 'max-content' }">
             <template #title><b>Frequency Table of Cipher Text</b></template>
           </a-table>
         </a-card>
@@ -28,30 +23,40 @@
 
         <a-card>
           <a-form-item label="Reference Text: ">
-            <a-textarea :rows="7" v-model:value="referenceText"/>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="danger" @click="findFrequencies4ReferenceText" style="width: 100%;">
-              Analyze Reference Text
-            </a-button>
+            <a-textarea :rows="8" v-model:value="referenceText" @change="findFrequencies4ReferenceText" />
           </a-form-item>
         </a-card>
 
-        <CardBarChart :chartData="referenceFreqChartData" style="margin-top: 10px" :key="referenceFreqChartKey"></CardBarChart>
+        <CardBarChart :chartData="referenceFreqChartData" :chartType="'reference'" style="margin-top: 10px" :key="referenceFreqChartKey"></CardBarChart>
 
         <a-card style="margin-top: 10px">
           <a-table :key="referenceFreqChartKey"
-                   :columns="referenceFreqTableColumns" :data-source="referenceFreqTableData" size="small" bordered :pagination="false" >
+                   :columns="referenceFreqTableColumns" :data-source="referenceFreqTableData" size="small" bordered :pagination="false" :scroll="{ x: 'max-content' }">
             <template #title><b>Frequency Table of Reference Text</b></template>
           </a-table>
         </a-card>
       </a-col>
     </a-row>
 
+    <br />
 
-    <br/>
-    <a-divider/>
+    <a-row type="flex" justify="center">
 
+      <a-col :span="6" style="margin-right: 10px">
+        <a-form-item>
+          <a-button type="primary" @click="decrypt" style="width: 100%; height: 55px;">
+            DECRYPT
+          </a-button>
+        </a-form-item>
+      </a-col>
+      <a-col :span="6" style="margin-left: 10px">
+        <a-form-item>
+          <a-button type="dashed" @click="" style="width: 100%; height: 55px;">
+            RESET
+          </a-button>
+        </a-form-item>
+      </a-col>
+    </a-row>
 
   </div>
 </template>
@@ -177,6 +182,10 @@ export default {
       this.prepareReferenceFreqTable();
     },
 
+
+    decrypt() {
+
+    }
 
 
   },

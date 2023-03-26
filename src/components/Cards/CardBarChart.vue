@@ -3,10 +3,10 @@
 	<!-- Active Users Card -->
 	<a-card :bordered="false" class="dashboard-bar-chart">
     <div class="card-title">
-      <h6>Frequency Analysis</h6>
-      <p>The frequencies of the cipher text above:</p>
+      <h6>Frequency Analysis {{chartType === 'cipher' ? "(Cipher Text)" : "(Reference Text)"}}</h6>
+      <p>The frequencies of the {{chartType}} text above:</p>
     </div>
-		<chart-bar :height="220" :data="barChartData"></chart-bar>
+		<chart-bar :height="220" :data="barChartData" :type="chartType"></chart-bar>
 	</a-card>
 	<!-- Active Users Card -->
 
@@ -22,6 +22,7 @@
 
     props: {
       chartData: Array,
+      chartType: String
     },
 
 		components: {

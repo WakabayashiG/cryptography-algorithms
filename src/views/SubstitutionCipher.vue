@@ -39,8 +39,10 @@
       </a-form-item>
 
       <a-table
-          :columns="getLetterTableColumns" :data-source="getLetterTableData" size="small" bordered :pagination="false"
-      />
+          :columns="getLetterTableColumns" :data-source="getLetterTableData" size="small" bordered :pagination="false">
+        <template #title><b>Alph. Index</b></template>
+
+      </a-table>
     </a-card>
 
   </div>
