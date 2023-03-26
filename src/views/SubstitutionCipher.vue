@@ -11,11 +11,26 @@
           <a-textarea placeholder="Enter the plain text..." :rows="7"
                       v-decorator="['plainText', { rules: [{ required: true, message: 'Please input plain text!' }] }]" />
         </a-form-item>
-        <a-form-item>
-          <a-button type="primary" html-type="submit" style="width: 100%;">
-            Encrypt
-          </a-button>
-        </a-form-item>
+
+
+        <a-row type="flex">
+          <a-col :span="24" :md="12">
+            <a-form-item>
+              <a-button type="primary" html-type="submit" style="width: 100%;">
+                Encrypt
+              </a-button>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24" :md="12">
+            <a-form-item>
+              <a-button :style="{ marginLeft: '8px', width: '100%' }" @click="handleReset">
+                Reset
+              </a-button>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+
       </a-form>
     </a-card>
 
@@ -52,6 +67,12 @@ export default {
   },
 
   methods: {
+
+    handleReset() {
+      this.form.resetFields();
+      this.cipherText = '';
+    },
+
     handleSubmit(e) {
       e.preventDefault();
       this.cipherText = '';
