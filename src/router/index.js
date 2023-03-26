@@ -15,6 +15,13 @@ let routes = [
 		redirect: '/dashboard',
 	},
 	{
+		path: '/substitutionCipher',
+		name: 'Substitution Cipher',
+		layout: "dashboard",
+		component: () => import('../views/SubstitutionCipher.vue'),
+	},
+
+	{
 		path: '/dashboard',
 		name: 'Dashboard',
 		layout: "dashboard",
