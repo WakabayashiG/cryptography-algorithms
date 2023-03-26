@@ -54,6 +54,8 @@
 								borderDashOffset: [6],
 							},
 							ticks: {
+                beginAtZero: 0,
+                precision: 0,
 								suggestedMin: 0,
 								suggestedMax: 1000,
 								display: true,
