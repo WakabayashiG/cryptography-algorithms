@@ -42,15 +42,6 @@ let routes = [
 		layout: "dashboard",
 		component: () => import('../views/Tables.vue'),
 	},
-	{
-		path: '/Profile',
-		name: 'Profile',
-		layout: "dashboard",
-		meta: {
-			layoutClass: 'layout-profile',
-		},
-		component: () => import('../views/Profile.vue'),
-	},
 ]
 
 // Adding layout property from each route to the meta
