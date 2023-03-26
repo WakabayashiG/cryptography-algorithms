@@ -43,21 +43,6 @@ let routes = [
 		component: () => import('../views/Tables.vue'),
 	},
 	{
-		path: '/billing',
-		name: 'Billing',
-		layout: "dashboard",
-		component: () => import('../views/Billing.vue'),
-	},
-	{
-		path: '/rtl',
-		name: 'RTL',
-		layout: "dashboard-rtl",
-		meta: {
-			layoutClass: 'dashboard-rtl',
-		},
-		component: () => import('../views/RTL.vue'),
-	},
-	{
 		path: '/Profile',
 		name: 'Profile',
 		layout: "dashboard",
@@ -65,19 +50,6 @@ let routes = [
 			layoutClass: 'layout-profile',
 		},
 		component: () => import('../views/Profile.vue'),
-	},
-	{
-		path: '/sign-in',
-		name: 'Sign-In',
-		component: () => import('../views/Sign-In.vue'),
-	},
-	{
-		path: '/sign-up',
-		name: 'Sign-Up',
-		meta: {
-			layoutClass: 'layout-sign-up',
-		},
-		component: () => import('../views/Sign-Up.vue'),
 	},
 ]
 
