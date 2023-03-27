@@ -127,9 +127,22 @@ export default {
         })
       }
 
-      this.cipherFreqTableData = [{ key: Math.random()}];
+      this.cipherFreqTableData = [];
+      this.cipherFreqTableData.push({ key: Math.random()});
+      this.cipherFreqTableData.push({ key: Math.random()});
+      let relatedLettersCount = 0;
+      this.cipherText.split('').forEach(l => {
+        if(isOnlyEnglishLetters(l)) {
+          return relatedLettersCount++;
+        }
+      });
+
       for (const item in this.cipherFreqAnalysis) {
         this.cipherFreqTableData[0][item] = this.cipherFreqAnalysis[item];
+        this.cipherFreqTableData[1][item] = relatedLettersCount !== 0
+            ? ((1.0 * this.cipherFreqAnalysis[item] / relatedLettersCount) * 100).toFixed(2)
+            : 0;
+
       }
     },
 
@@ -142,9 +155,21 @@ export default {
         })
       }
 
-      this.referenceFreqTableData = [{ key: Math.random()}];
+      this.referenceFreqTableData = [];
+      this.referenceFreqTableData.push({ key: Math.random()});
+      this.referenceFreqTableData.push({ key: Math.random()});
+      let relatedLettersCount = 0;
+      this.referenceText.split('').forEach(l => {
+        if(isOnlyEnglishLetters(l)) {
+          return relatedLettersCount++;
+        }
+      });
+
       for (const item in this.referenceFreqAnalysis) {
         this.referenceFreqTableData[0][item] = this.referenceFreqAnalysis[item];
+        this.referenceFreqTableData[1][item] = relatedLettersCount !== 0
+            ? ((1.0 * this.referenceFreqAnalysis[item] / relatedLettersCount) * 100).toFixed(2)
+            : 0;
       }
     },
 
