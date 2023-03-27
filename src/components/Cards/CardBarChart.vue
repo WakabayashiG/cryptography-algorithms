@@ -21,7 +21,7 @@
 	export default {
 
     props: {
-      chartData: Array,
+      freqAnalysis: Object,
       chartType: String
     },
 
@@ -32,14 +32,14 @@
 			return {
 				// Data for bar chart.
 				barChartData: {
-					labels: Object.keys(getLettersMap()),
+					labels: this.freqAnalysis != null ? Object.keys(this.freqAnalysis) : Object.keys(getLettersMap()),
 					datasets: [{
 						label: "Count",
 						backgroundColor: '#fff',
 						borderWidth: 0,
 						borderSkipped: false,
 						borderRadius: 6,
-						data: this.chartData,
+						data: this.freqAnalysis != null ? Object.values(this.freqAnalysis) : [],
 						maxBarThickness: 20,
 					}, ],
 				},

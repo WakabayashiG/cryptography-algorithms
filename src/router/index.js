@@ -12,31 +12,22 @@ let routes = [
 	{
 		path: '/',
 		name: 'Home',
-		redirect: '/dashboard',
+		redirect: '/shift-cipher',
 	},
 	{
-		path: '/frequencyAnalysis',
+		path: '/frequency-analysis',
 		name: 'Frequency Analysis',
 		layout: "dashboard",
 		component: () => import('../views/FrequencyAnalysis.vue'),
 	},
 
 	{
-		path: '/substitutionCipher',
-		name: 'Substitution Cipher',
+		path: '/shift-cipher',
+		name: 'Shift Cipher',
 		layout: "dashboard",
-		component: () => import('../views/SubstitutionCipher.vue'),
+		component: () => import('../views/ShiftCipher.vue'),
 	},
 
-	{
-		path: '/dashboard',
-		name: 'Dashboard',
-		layout: "dashboard",
-		// route level code-splitting
-		// this generates a separate chunk (about.[hash].js) for this route
-		// which is lazy-loaded when the route is visited.
-		component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
-	},
 	{
 		path: '/layout',
 		name: 'Layout',

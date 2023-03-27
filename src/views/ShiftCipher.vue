@@ -53,7 +53,7 @@ import {isOnlyEnglishLetters} from "@/utils/stringUtils";
 import {getLettersMap} from "@/utils/lettersMap";
 
 export default {
-  name: "SubstitutionCipher",
+  name: "ShiftCipher",
 
   data() {
     return {

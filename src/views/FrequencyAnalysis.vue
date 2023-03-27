@@ -8,7 +8,7 @@
           </a-form-item>
         </a-card>
 
-        <CardBarChart :chartData="cipherFreqChartData" :chartType="'cipher'" style="margin-top: 10px" :key="cipherFreqChartKey"></CardBarChart>
+        <CardBarChart :freqAnalysis="cipherFreqAnalysis" :chartType="'cipher'" style="margin-top: 10px" :key="cipherFreqChartKey"></CardBarChart>
 
         <a-card style="margin-top: 10px">
           <a-table :key="cipherFreqChartKey"
@@ -27,7 +27,7 @@
           </a-form-item>
         </a-card>
 
-        <CardBarChart :chartData="referenceFreqChartData" :chartType="'reference'" style="margin-top: 10px" :key="referenceFreqChartKey"></CardBarChart>
+        <CardBarChart :freqAnalysis="referenceFreqAnalysis" :chartType="'reference'" style="margin-top: 10px" :key="referenceFreqChartKey"></CardBarChart>
 
         <a-card style="margin-top: 10px">
           <a-table :key="referenceFreqChartKey"
@@ -90,14 +90,14 @@ export default {
       cipherText: '',
       cipherFreqAnalysis: {},
       cipherFreqChartKey: Math.random(),
-      cipherFreqChartData: [],
+      cipherFreqChartSorted: false,
       cipherFreqTableColumns: [],
       cipherFreqTableData:[],
 
       referenceText: '',
       referenceFreqAnalysis: {},
       referenceFreqChartKey: Math.random(),
-      referenceFreqChartData: [],
+      referenceFreqChartSorted: false,
       referenceFreqTableColumns: [],
       referenceFreqTableData:[],
 
@@ -160,7 +160,6 @@ export default {
           this.cipherFreqAnalysis[c]++;
         }
       }
-      this.cipherFreqChartData = Object.values(this.cipherFreqAnalysis)
       this.cipherFreqChartKey = Math.random();
       this.prepareCipherFreqTable();
     },
@@ -177,11 +176,9 @@ export default {
           this.referenceFreqAnalysis[c]++;
         }
       }
-      this.referenceFreqChartData = Object.values(this.referenceFreqAnalysis)
       this.referenceFreqChartKey = Math.random();
       this.prepareReferenceFreqTable();
     },
-
 
     decrypt() {
 
