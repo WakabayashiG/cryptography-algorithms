@@ -4,4 +4,9 @@ function isOnlyEnglishLetters(str) {
     return regexExp.test(str);
 }
 
-export { isOnlyEnglishLetters }
+function isOnlyTurkishLetters(str) {
+    let regexExp = /[a-zA-ZğüşıöçĞÜŞİÖÇ]+/;
+    return regexExp.test(str);
+}
+
+export { isOnlyEnglishLetters, isOnlyTurkishLetters }

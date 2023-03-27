@@ -50,7 +50,7 @@
 
 <script>
 import {isOnlyEnglishLetters} from "@/utils/stringUtils";
-import {getLettersMap} from "@/utils/lettersMap";
+import {getEnglishLettersMap} from "@/utils/lettersMap";
 
 export default {
   name: "ShiftCipher",
@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       form: this.$form.createForm(this, { name: 'coordinated' }),
-      lettersIdxMap: getLettersMap(),
+      lettersIdxMap: getEnglishLettersMap(),
       cipherText:''
     };
   },

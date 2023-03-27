@@ -1,10 +1,27 @@
 <template>
   <div>
-    <a-row :gutter="[8,8]">
+    <a-row>
+      <a-card>
+        <a-form layout="inline">
+          <a-form-item label="Select Language: ">
+            <a-select default-value="en" style="width: 250px" @change="handleChangeLang">
+              <a-select-option value="en">
+                English
+              </a-select-option>
+              <a-select-option value="tr">
+                Turkish
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-form>
+      </a-card>
+    </a-row>
+
+    <a-row :gutter="[8,8]" style="margin-top: 10px">
       <a-col :span="12">
         <a-card>
           <a-form-item label="Cipher Text: ">
-            <a-textarea :rows="8" v-model:value="cipherText" @change="findFrequencies4CipherText"/>
+            <a-textarea :rows="7" v-model:value="cipherText" @change="findFrequencies4CipherText"/>
           </a-form-item>
         </a-card>
 
@@ -23,7 +40,7 @@
 
         <a-card>
           <a-form-item label="Reference Text: ">
-            <a-textarea :rows="8" v-model:value="referenceText" @change="findFrequencies4ReferenceText" />
+            <a-textarea :rows="7" v-model:value="referenceText" @change="findFrequencies4ReferenceText" />
           </a-form-item>
         </a-card>
 
@@ -64,8 +81,12 @@
 <script>
 import {Chart, registerables} from 'chart.js';
 import CardBarChart from "@/components/Cards/CardBarChart.vue";
-import {getLettersMap} from "@/utils/lettersMap";
-import {isOnlyEnglishLetters} from "@/utils/stringUtils";
+import {
+  getEnglishLettersMap,
+  getSpanishLettersMap,
+  getTurkishLettersMap
+} from "@/utils/lettersMap";
+import {isOnlyEnglishLetters, isOnlyTurkishLetters} from "@/utils/stringUtils";
 
 Chart.register(...registerables);
 
@@ -77,11 +98,7 @@ export default {
   },
 
   created() {
-    this.initCipherFreqAnalysis();
-    this.initReferenceFreqAnalysis();
-    this.prepareCipherFreqTable();
-    this.prepareReferenceFreqTable();
-
+    this.refreshUI();
   },
 
 
@@ -101,19 +118,21 @@ export default {
       referenceFreqTableColumns: [],
       referenceFreqTableData:[],
 
+      selectedLang: 'en',
+      lettersMap: getEnglishLettersMap(),
     };
   },
 
   methods: {
 
     initCipherFreqAnalysis() {
-      for (const property in getLettersMap()) {
+      for (const property in this.lettersMap) {
         this.cipherFreqAnalysis[property] = 0
       }
     },
 
     initReferenceFreqAnalysis() {
-      for (const property in getLettersMap()) {
+      for (const property in this.lettersMap) {
         this.referenceFreqAnalysis[property] = 0
       }
     },
@@ -132,7 +151,11 @@ export default {
       this.cipherFreqTableData.push({ key: Math.random()});
       let relatedLettersCount = 0;
       this.cipherText.split('').forEach(l => {
-        if(isOnlyEnglishLetters(l)) {
+        if(this.selectedLang === 'en' && isOnlyEnglishLetters(l)) {
+          return relatedLettersCount++;
+        }
+
+        if(this.selectedLang === 'tr' && isOnlyTurkishLetters(l)) {
           return relatedLettersCount++;
         }
       });
@@ -160,7 +183,11 @@ export default {
       this.referenceFreqTableData.push({ key: Math.random()});
       let relatedLettersCount = 0;
       this.referenceText.split('').forEach(l => {
-        if(isOnlyEnglishLetters(l)) {
+        if(this.selectedLang === 'en' && isOnlyEnglishLetters(l)) {
+          return relatedLettersCount++;
+        }
+
+        if(this.selectedLang === 'tr' && isOnlyTurkishLetters(l)) {
           return relatedLettersCount++;
         }
       });
@@ -176,11 +203,15 @@ export default {
     findFrequencies4CipherText() {
       this.initCipherFreqAnalysis();
       for (let c of this.cipherText) {
-        if(!isOnlyEnglishLetters(c)) {
+        if(this.selectedLang === 'en' && !isOnlyEnglishLetters(c)) {
           continue;
         }
 
-        c = c.toUpperCase();
+        if(this.selectedLang === 'tr' && !isOnlyTurkishLetters(c)) {
+          continue;
+        }
+
+        c = this.selectedLang === 'tr' ? c.toLocaleUpperCase('tr-TR') : c.toUpperCase();
         if (c in this.cipherFreqAnalysis) {
           this.cipherFreqAnalysis[c]++;
         }
@@ -192,16 +223,58 @@ export default {
     findFrequencies4ReferenceText() {
       this.initReferenceFreqAnalysis();
       for (let c of this.referenceText) {
-        if(!isOnlyEnglishLetters(c)) {
+        if(this.selectedLang === 'en' && !isOnlyEnglishLetters(c)) {
           continue;
         }
 
-        c = c.toUpperCase();
+        if(this.selectedLang === 'tr' && !isOnlyTurkishLetters(c)) {
+          continue;
+        }
+
+        c = this.selectedLang === 'tr' ? c.toLocaleUpperCase('tr-TR') : c.toUpperCase();
         if (c in this.referenceFreqAnalysis) {
           this.referenceFreqAnalysis[c]++;
         }
       }
       this.referenceFreqChartKey = Math.random();
+      this.prepareReferenceFreqTable();
+    },
+
+    handleChangeLang(value) {
+      console.log(`selected ${value}`);
+      this.selectedLang = value;
+      this.lettersMap = {};
+      if (value === 'tr') {
+        this.lettersMap = getTurkishLettersMap();
+      } else if (value === 'en') {
+        this.lettersMap = getEnglishLettersMap();
+      } else if (value === 'es') {
+        this.lettersMap = getSpanishLettersMap();
+      } else {
+        this.lettersMap = getEnglishLettersMap();
+      }
+
+      this.refreshUI();
+    },
+
+    refreshUI() {
+      this.cipherText = '';
+      this.cipherFreqAnalysis = {};
+      this.cipherFreqChartKey = Math.random();
+      this.cipherFreqChartSorted = false;
+      this.cipherFreqTableColumns = [];
+      this.cipherFreqTableData = [];
+
+      this.referenceText = '';
+      this.referenceFreqAnalysis = {};
+      this.referenceFreqChartKey = Math.random();
+      this.referenceFreqChartSorted = false;
+      this.referenceFreqTableColumns = [];
+      this.referenceFreqTableData = [];
+
+      this.initCipherFreqAnalysis();
+      this.initReferenceFreqAnalysis();
+      this.prepareCipherFreqTable();
       this.prepareReferenceFreqTable();
     },
 

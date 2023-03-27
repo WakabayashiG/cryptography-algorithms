@@ -16,7 +16,7 @@
 
 	// Bar chart for "Active Users" card.
 	import ChartBar from '../Charts/ChartBar' ;
-  import {getLettersMap} from "@/utils/lettersMap";
+  import {getEnglishLettersMap} from "@/utils/lettersMap";
 
 	export default {
 
@@ -32,7 +32,7 @@
 			return {
 				// Data for bar chart.
 				barChartData: {
-					labels: this.freqAnalysis != null ? Object.keys(this.freqAnalysis) : Object.keys(getLettersMap()),
+					labels: this.freqAnalysis != null ? Object.keys(this.freqAnalysis) : Object.keys(getEnglishLettersMap()),
 					datasets: [{
 						label: "Count",
 						backgroundColor: '#fff',
