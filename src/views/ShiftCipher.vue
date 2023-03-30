@@ -88,11 +88,15 @@ export default {
           // yIdx = (xIdx + k) mod 26
           x = x.toUpperCase();
           let xIdx = this.lettersIdxMap[x];
-          let yIdx = (Number(xIdx) + Number(k)) % 26;
+          let yIdx = this.mod((Number(xIdx) + Number(k)), 26);
           let y = this.getKeyByValue(this.lettersIdxMap, yIdx);
           this.cipherText += y;
         }
       }
+    },
+
+    mod(n, m) {
+      return (n % m + m) % m;
     },
 
     getKeyByValue(object, value) {
