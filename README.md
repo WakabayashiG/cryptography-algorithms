@@ -1,5 +1,4 @@
-# ÖDEV (31 Mart 2023)
-
+# Kriptografi Algoritmaları
 
 Projenin bağlı olduğu npm modüllerini yüklemek için;
 
