@@ -35,7 +35,7 @@
 
     <a-card>
       <a-form-item label="Cipher Text: ">
-        <a-textarea :rows="7" :disabled="true" v-model:value="cipherText" />
+        <a-textarea :rows="7" v-model:value="cipherText" />
       </a-form-item>
 
       <a-table

@@ -57,8 +57,19 @@
 
     <br />
 
-    <a-row type="flex" justify="center">
+    <a-card>
+      <a-row>
+        <a-col>
+          <a-row><span><b>Cipher Text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </b></span>{{printResult(this.cipherFreqAnalysis)}}</a-row>
+          <a-row><span><b>Reference Text&nbsp;&nbsp;: </b></span>{{printResult(this.referenceFreqAnalysis)}}</a-row>
+        </a-col>
+      </a-row>
+    </a-card>
 
+    <br />
+
+
+    <a-row type="flex" justify="center">
       <a-col :span="6" style="margin-right: 10px">
         <a-form-item>
           <a-button type="primary" @click="decrypt" style="width: 100%; height: 55px;">
@@ -68,10 +79,70 @@
       </a-col>
       <a-col :span="6" style="margin-left: 10px">
         <a-form-item>
-          <a-button type="dashed" @click="" style="width: 100%; height: 55px;">
+          <a-button type="dashed" @click="refreshUI" style="width: 100%; height: 55px;">
             RESET
           </a-button>
         </a-form-item>
+      </a-col>
+    </a-row>
+
+    <br />
+    <a-divider />
+    <br />
+
+
+    <a-row style="margin-top: 10px">
+      <a-col :span="10">
+        <a-card>
+          <a-form-item label="Possible Plain Text: ">
+            <a-textarea :rows="7" v-model:value="possiblePlainText" />
+          </a-form-item>
+        </a-card>
+      </a-col>
+      <a-col :span="4" type="flex" align="center" class="centered-element">
+        <a-row style="margin-top: 100px" />
+        <a-button style="background-color: #00b96b; color: white; border-color:#00b96b" @click="analyzeCommonWords">
+          Biagram/Triagram Analyze <a-icon type="arrow-right" /> <br> (BONUS)
+        </a-button>
+      </a-col>
+      <a-col :span="10">
+        <a-card>
+          <a-form-item label="Analyzed-Possible Plain Text: ">
+            <a-textarea :rows="7" :disabled="true" v-model:value="analyzedPlainText"   />
+          </a-form-item>
+        </a-card>
+      </a-col>
+    </a-row>
+
+    <br />
+    <a-divider />
+    <br />
+
+    <a-row style="margin-top: 10px">
+      <a-col :span="10">
+        <a-card>
+          <a-form-item label="Original Plain Text: ">
+            <a-textarea :rows="7"  v-model:value="originalPlainText" placeholder="Enter the original text to calculate accuracy.." />
+          </a-form-item>
+        </a-card>
+      </a-col>
+      <a-col :span="4" type="flex" align="center" class="centered-element">
+        <a-row style="margin-top: 100px" />
+        <a-button type="danger" @click="calculateAccuracyRates" :disabled="disabledAccuracyBtn">
+          Calculate Accuracy <a-icon type="arrow-right" />
+        </a-button>
+      </a-col>
+      <a-col :span="10">
+        <h4 style="text-decoration: underline;">Accuracy:</h4>
+        <h6>For possible plain text:</h6>
+        <a-row><span><b>Correct Prediction Numbers:</b> {{this.correctPrediction4PossibleText}}</span></a-row>
+        <a-row><span><b>Total Characters Numbers:</b> {{this.possiblePlainText.length}}</span></a-row>
+        <a-row><span><b>Accuracy Rate:</b> {{this.accuracy4PossibleText}} %</span></a-row>
+        <a-divider></a-divider>
+        <h6>For analyzed possible plain text:</h6>
+        <a-row><span><b>Correct Prediction Numbers:</b> {{this.correctPrediction4AnalyzedPossibleText}}</span></a-row>
+        <a-row><span><b>Total Characters Numbers:</b> {{this.analyzedPlainText.length}}</span></a-row>
+        <a-row><span><b>Accuracy Rate:</b> {{this.accuracy4AnalyzedPossibleText}} %</span></a-row>
       </a-col>
     </a-row>
 
@@ -86,7 +157,8 @@ import {
   getSpanishLettersMap,
   getTurkishLettersMap
 } from "@/utils/lettersMap";
-import {isOnlyEnglishLetters, isOnlyTurkishLetters} from "@/utils/stringUtils";
+import {extractWords, isOnlyEnglishLetters, isOnlyTurkishLetters, similarity} from "@/utils/stringUtils";
+import {getEnglishCommonWords, getTurkishCommonWords} from "@/utils/commonWords";
 
 Chart.register(...registerables);
 
@@ -120,6 +192,15 @@ export default {
 
       selectedLang: 'en',
       lettersMap: getEnglishLettersMap(),
+
+      possiblePlainText: '',
+      analyzedPlainText: '',
+      originalPlainText: '',
+
+      correctPrediction4PossibleText:0,
+      correctPrediction4AnalyzedPossibleText:0,
+      accuracy4PossibleText: 0.0,
+      accuracy4AnalyzedPossibleText: 0.0,
     };
   },
 
@@ -272,6 +353,15 @@ export default {
       this.referenceFreqTableColumns = [];
       this.referenceFreqTableData = [];
 
+      this.possiblePlainText = '';
+      this.analyzedPlainText = '';
+      this.originalPlainText = '';
+
+      this.correctPrediction4PossibleText = 0;
+      this.correctPrediction4AnalyzedPossibleText = 0;
+      this.accuracy4PossibleText = 0.0;
+      this.accuracy4AnalyzedPossibleText = 0.0;
+
       this.initCipherFreqAnalysis();
       this.initReferenceFreqAnalysis();
       this.prepareCipherFreqTable();
@@ -279,8 +369,114 @@ export default {
     },
 
     decrypt() {
+      this.possiblePlainText = '';
+      const cipCharArr = Object.keys(this.sortObjectByVal(this.cipherFreqAnalysis));
+      const refCharArr = Object.keys(this.sortObjectByVal(this.referenceFreqAnalysis));
 
-    }
+      for (let x of this.cipherText) {
+        if((this.selectedLang === 'en' && !isOnlyEnglishLetters(x)) || (this.selectedLang === 'tr' && !isOnlyTurkishLetters(x))) {
+          this.possiblePlainText += x;
+        } else {
+          x = this.selectedLang === 'tr' ? x.toLocaleUpperCase('tr-TR') : x.toUpperCase();
+          let xIdx = cipCharArr.indexOf(x);
+          let y = refCharArr.at(xIdx);
+          this.possiblePlainText += y;
+        }
+      }
+
+      window.scrollTo(0,document.body.scrollHeight);
+    },
+
+
+    analyzeCommonWords() {
+      let map = {};
+      let text = this.possiblePlainText;
+      //let text = "English texts fol beginners to practice reading and comprehension online and for free. Practicing your comprehension of written English will both improve your vocabulary and understanding of grammar and word order. The texts below are designed to help you develop while giving you an instant evaluation of your progress";
+      let words = extractWords(text);
+      let commonWords = this.selectedLang === 'en' ? getEnglishCommonWords() : getTurkishCommonWords();
+      for (let word of words) {
+
+        let editingWord = '';
+        let maxSimilarityScore = 0.0;
+        for(let commonWord of commonWords) {
+          if (word.length <= 4 && word.length === commonWord.length) {
+            let similarityScore = similarity(word, commonWord);
+            if (similarityScore > maxSimilarityScore) {
+              maxSimilarityScore = similarityScore;
+              editingWord = commonWord;
+            }
+          }
+        }
+        if (maxSimilarityScore < 1.0 && maxSimilarityScore >= 0.51) {
+          map[word] = editingWord;
+        }
+      }
+
+      this.replaceWholeWord(map);
+      console.log(map);
+    },
+
+    replaceWholeWord(map) {
+      let replacingText = this.possiblePlainText;
+
+      for (const property in map) {
+        let rmPiece = property;
+        let removeStr = `\\b${rmPiece}\\b`;
+        const regex =  new RegExp(removeStr,'gi'); // correct way
+        replacingText = replacingText.replace(regex,map[property]); // it works
+      }
+
+      this.analyzedPlainText = replacingText;
+    },
+
+    sortObjectByVal(unordered) {
+      const ordered = Object.entries(unordered)
+          .sort(([,a],[,b]) => b-a)
+          .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+      return ordered;
+    },
+
+    printResult(obj) {
+
+      const tmpObj = this.sortObjectByVal(obj);
+      let result = '';
+      for (const item in tmpObj) {
+        result += `${item} (${tmpObj[item]}) - `
+      }
+
+      return result;
+    },
+
+
+    calculateAccuracyRates() {
+
+      this.correctPrediction4PossibleText = 0;
+      this.correctPrediction4AnalyzedPossibleText = 0;
+
+      for (let i = 0; i < this.originalPlainText.length; i++) {
+        let originChar = this.originalPlainText.charAt(i)
+        let posChar = this.possiblePlainText.charAt(i);
+        let anPosChar = this.analyzedPlainText.charAt(i);
+
+        originChar = this.selectedLang === 'tr' ? originChar.toLocaleUpperCase('tr-TR') : originChar.toUpperCase();
+        posChar = this.selectedLang === 'tr' ? posChar.toLocaleUpperCase('tr-TR') : posChar.toUpperCase();
+        anPosChar = this.selectedLang === 'tr' ? anPosChar.toLocaleUpperCase('tr-TR') : anPosChar.toUpperCase();
+
+        if (originChar === posChar) {
+          this.correctPrediction4PossibleText++;
+        }
+
+        if (originChar === anPosChar) {
+          this.correctPrediction4AnalyzedPossibleText++;
+        }
+      }
+
+      this.accuracy4PossibleText = this.possiblePlainText.length === 0 ? 0
+          : (1.0 * this.correctPrediction4PossibleText / this.possiblePlainText.length) * 100;
+      this.accuracy4AnalyzedPossibleText = this.analyzedPlainText.length === 0 ? 0
+          : (1.0 * this.correctPrediction4AnalyzedPossibleText / this.analyzedPlainText.length) * 100;
+
+    },
 
 
   },
@@ -289,4 +485,7 @@ export default {
 </script>
 
 <style scoped>
+.centered-element {
+
+}
 </style>
