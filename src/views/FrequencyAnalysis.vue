@@ -102,7 +102,7 @@
       <a-col :span="4" type="flex" align="center" class="centered-element">
         <a-row style="margin-top: 100px" />
         <a-button style="background-color: #00b96b; color: white; border-color:#00b96b" @click="analyzeCommonWords">
-          Common Words Analyze <a-icon type="arrow-right" /> <br> (BONUS)
+          Analyze Common Words <a-icon type="arrow-right" /> <br> (BONUS)
         </a-button>
       </a-col>
       <a-col :span="10">
