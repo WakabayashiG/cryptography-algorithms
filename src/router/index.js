@@ -29,6 +29,13 @@ let routes = [
 	},
 
 	{
+		path: '/aes-plus-plus',
+		name: 'AES++',
+		layout: "dashboard",
+		component: () => import('../views/AESPlusPlus.vue'),
+	},
+
+	{
 		path: '/layout',
 		name: 'Layout',
 		layout: "dashboard",
