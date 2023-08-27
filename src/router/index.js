@@ -36,6 +36,13 @@ let routes = [
 	},
 
 	{
+		path: '/steganography',
+		name: 'Steganography',
+		layout: "dashboard",
+		component: () => import('../views/Steganography.vue'),
+	},
+
+	{
 		path: '/layout',
 		name: 'Layout',
 		layout: "dashboard",
